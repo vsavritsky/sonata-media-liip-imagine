@@ -11,14 +11,14 @@
       "email": "stadnikandreypublic@gmail.com"
     },
     {
-      "name": "Sonata Media integration with Liip Imagine",
+      "name": "Sonata Media integration with Liip Imagine"
     }
   ],
   "require": {
     "php": ">=5.3.2",
     "symfony/framework-bundle": "~2.3||~3.0",
     "liip/imagine-bundle": "~1.9",
-    "sonata-project/media-bundle": "~3.4",
+    "sonata-project/media-bundle": "~3.4"
   },
   "require-dev": {
     "symfony/expression-language": "~2.4||~3.0",
