@@ -1,4 +1,28 @@
 services:
-#    enemis_sonata_media_liip_imagine.example:
-#        class: Enemis\SonataMediaLiipImagineBundle\Example
-#        arguments: ["@service_id", "plain_value", "%parameter%"]
+    enemis.sonata_media_liip_imagine.thumbnail:
+        class: Enemis\SonataMediaLiipImagineBundle\Thumbnail\LiipImagineThumbnail
+        arguments: ["@router"]
+        calls:
+            - ['setCacheManager', ['@liip_imagine.cache.manager']]
+            - ['setFilterSets', ['%liip_imagine.filter_sets%']]
+
+    enemis.sonata_media_liip_imagine.liip_resizer:
+        class: Enemis\SonataMediaLiipImagineBundle\Resizer\LiipResizer
+        arguments: ["", "", ""]
+        calls:
+            - ['setRootDir', ['%kernel.root_dir%']]
+            - ['setHttpKernel', ['@http_kernel']]
+            - ['setRouter', ['@router']]
+
+
+    enemis.sonata_media_liip_imagine.chain_resizer:
+        class: Enemis\SonataMediaLiipImagineBundle\Resizer\ChainResizer
+        arguments: ["", "", ""]
+        calls:
+            - ['setLiipResizer', ['@enemis.sonata_media_liip_imagine.liip_resizer']]
+            - ['setSonataResizer', ['@sonata.media.resizer.default']]
+
+    enemis.sonata_media_liip_imagineexception_listener:
+        class: Enemis\SonataMediaLiipImagineBundle\EventListener\ExceptionListener
+        tags:
+            - { name: kernel.event_listener, event: kernel.exception }
