@@ -1,0 +1,3 @@
+enemis_sonata_media_liip_imagine_homepage:
+    path:     /
+    defaults: { _controller: EnemisSonataMediaLiipImagineBundle:Default:index }
