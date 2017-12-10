@@ -40,8 +40,9 @@ class AppKernel extends Kernel
 ### 3 Sonata Media config
     You need to configure your Sonata Media Bundle. Most important part is to configure context, cdn, providers.
     You mustn't add formats to contexts that should use Liip formats. Tell to providers to use custom thumbnail service
-    'sonata.media.thumbnail.liip_imagine'. **Please do not forget this bundle allow use Liip imagine only with image provider and youtube provider.
-     If you require something else please let me know or suggest pull request**
+    'sonata.media.thumbnail.liip_imagine'. ** Please do not forget this bundle allow use Liip imagine only with image provider and youtube provider.
+     If you require something else please let me know or suggest pull request **
+     
 ```yaml
 #config.yml
 sonata_media:
@@ -84,6 +85,7 @@ sonata_media:
             thumbnail:  sonata.media.thumbnail.liip_imagine #if you want use Liip with this provider you have to use this thumbnail service
         youtube:
             thumbnail:  sonata.media.thumbnail.liip_imagine
+            html5: true
 ```    
 More details you are able to find on [official documentation](https://sonata-project.org/bundles/media/3-x/doc/reference/advanced_configuration.html). 
 
@@ -132,7 +134,9 @@ liip_imagine:
 [More details](http://symfony.com/doc/master/bundles/LiipImagineBundle/index.html) about Liip Imagine
 
 ### 5 Override Sonata's Media provider.
-In general, this bundle override sonata's providers(ImageProvider and YoutubeProvider). If you wanna override some provider's part, you have to extend own provider with Enemis\SonataMediaLiipImagineBundle\Provider\ImageProvider.
+In general, this bundle override sonata's providers(ImageProvider and YoutubeProvider). 
+If you wanna override some provider's part, you have to extend own provider 
+ with Enemis\SonataMediaLiipImagineBundle\Provider\ImageProvider.
 or Enemis\SonataMediaLiipImagineBundle\Provider\YouTubeProvider for youtube provider and override the corresponding parameter.
 Sonata Media has two parameters for that. Just override it if you want. 
 * sonata.media.provider.image.class: Application\Sonata\MediaBundle\Provider\ImageProvider

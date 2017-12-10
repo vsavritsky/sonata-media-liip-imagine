@@ -9,6 +9,7 @@ use Sonata\MediaBundle\Provider\ImageProvider as SonataImageProvider;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
+use Sonata\MediaBundle\Twig\Extension\MediaExtension as SonataMediaExtension;
 
 class LiipIntegrationBeforeOptimizationCompiler implements CompilerPassInterface
 {
@@ -21,6 +22,9 @@ class LiipIntegrationBeforeOptimizationCompiler implements CompilerPassInterface
     {
         $container->getParameterBag()->set('sonata.media.thumbnail.liip_imagine', LiipImagineThumbnail::class);
         $definition = $container->getDefinition('sonata.media.twig.extension');
-        $definition->setClass(MediaExtension::class);
+
+        if ($definition->getClass() === SonataMediaExtension::class) {
+            $definition->setClass(MediaExtension::class);
+        }
     }
 }

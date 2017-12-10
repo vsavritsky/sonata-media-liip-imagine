@@ -88,7 +88,7 @@ class LiipResizer implements ResizerInterface
      */
     public function resize(MediaInterface $media, File $in, File $out, $format, array $settings)
     {
-      throw new \Exception('You mustn\'t call this method.');
+        throw new \Exception('You mustn\'t call this method.');
     }
 
     /**

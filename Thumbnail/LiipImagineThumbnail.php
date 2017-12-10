@@ -57,9 +57,13 @@ class LiipImagineThumbnail implements ThumbnailInterface
     {
         if (MediaProviderInterface::FORMAT_REFERENCE === $format) {
             $path = $provider->getReferenceImage($media);
-        } elseif (MediaProviderInterface::FORMAT_ADMIN === $format) {
-            $path = sprintf('%s/thumb_%s_%s.%s', $provider->generatePath($media), $media->getId(), $format, $media->getExtension());
+
+            return $this->getCdn()->getPath($path, $media->getCdnIsFlushable());
         } else {
+            if (MediaProviderInterface::FORMAT_ADMIN === $format) {
+                $format = sprintf('%s_%s', $media->getContext(), $format);
+            }
+
             $path = $this->cacheManager->getBrowserPath($provider->generatePublicUrl($media, 'reference'), $format);
         }
         return $path;

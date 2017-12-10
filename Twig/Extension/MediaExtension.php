@@ -11,6 +11,7 @@
 
 namespace Enemis\SonataMediaLiipImagineBundle\Twig\Extension;
 
+use Doctrine\Bundle\DoctrineBundle\Registry;
 use Sonata\MediaBundle\Model\MediaInterface;
 use Sonata\MediaBundle\Twig\Extension\MediaExtension as SonataMediaExtension;
 
