@@ -74,13 +74,7 @@ class LiipImagineThumbnail implements ThumbnailInterface
      */
     public function generatePrivateUrl(MediaProviderInterface $provider, MediaInterface $media, $format)
     {
-        if ($format !== MediaProviderInterface::FORMAT_REFERENCE) {
-            throw new \RuntimeException('No private url for LiipImagineThumbnail');
-        }
-
-        $path = $provider->getReferenceImage($media);
-
-        return $path;
+        return $provider->getReferenceImage($media);
     }
 
     /**
@@ -97,7 +91,9 @@ class LiipImagineThumbnail implements ThumbnailInterface
      */
     public function delete(MediaProviderInterface $provider, MediaInterface $media, $formats = null)
     {
-        // feature not available
-        return;
+        foreach ($formats as $format) {
+            $referencePath = $provider->generatePublicUrl($media, 'reference');
+            $this->cacheManager->remove([$referencePath], [$format]);
+        }
     }
 }

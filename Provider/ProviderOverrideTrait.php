@@ -53,4 +53,20 @@ trait ProviderOverrideTrait
     {
         return $this->thumbnail->generatePrivateUrl($this, $media, $format);
     }
+
+    public function flushCdn(MediaInterface $media)
+    {
+        if ($media->getId()) {
+            $formatsBeDeleted = [];
+            foreach ($this->getFormats() as $format => $settings) {
+                if (substr($format, 0, strlen($media->getContext())) === $media->getContext()) {
+                    $formatsBeDeleted[] = $format;
+                }
+            }
+
+            if (!empty($formatsBeDeleted)) {
+                $this->thumbnail->delete($this, $media, $formatsBeDeleted);
+            }
+        }
+    }
 }

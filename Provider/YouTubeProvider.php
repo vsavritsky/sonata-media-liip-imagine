@@ -2,12 +2,23 @@
 
 namespace Enemis\SonataMediaLiipImagineBundle\Provider;
 
+use Gaufrette\Exception\FileNotFound;
 use Sonata\MediaBundle\Model\MediaInterface;
 use \Sonata\MediaBundle\Provider\YouTubeProvider as SonataYouTubeProvider;
 
 class YouTubeProvider extends SonataYouTubeProvider
 {
     use ProviderOverrideTrait;
+
+    const GOOGLE_API_URL = 'https://www.googleapis.com/youtube/v3/';
+
+    const FETCH_PARTS = [
+        'statistics',
+        'snippet',
+        'localizations',
+    ];
+
+    protected $apiKey;
 
     /**
      * @param MediaInterface $media
@@ -19,6 +30,14 @@ class YouTubeProvider extends SonataYouTubeProvider
     protected function getBoxHelperProperties(MediaInterface $media, $format, $options = array())
     {
         return $this->resolveImageBox($media, $format);
+    }
+
+    /**
+     * @param mixed $apiKey
+     */
+    public function setApiKey(string $apiKey): void
+    {
+        $this->apiKey = $apiKey;
     }
 
     /**
@@ -53,6 +72,13 @@ class YouTubeProvider extends SonataYouTubeProvider
 
         $file = $this->getFilesystem()->get(sprintf('%s/%s.jpg', $this->generatePath($media), $media->getProviderReference()), true);
 
+        try {
+            $file->delete();
+        }
+        catch (FileNotFound $e) {
+        }
+        $file = $this->getFilesystem()->get(sprintf('%s/%s.jpg', $this->generatePath($media), $media->getProviderReference()), true);
+
         $content = file_get_contents($media->getProviderMetadata()['thumbnail_url']);
 
         if ($content) {
@@ -61,4 +87,78 @@ class YouTubeProvider extends SonataYouTubeProvider
             return;
         }
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function updateMetadata(MediaInterface $media, $force = false)
+    {
+        /**
+         * @var MediaYoutube $media
+         */
+        $url = $this->buildUrl($media);
+
+        try {
+            $metadata = $this->getMetadata($media, $url);
+        } catch (\RuntimeException $e) {
+            $media->setEnabled(false);
+            $media->setProviderStatus(MediaInterface::STATUS_ERROR);
+
+            return;
+        }
+
+        $metadata = $this->adaptMetadata($metadata);
+
+        $media->setProviderMetadata($metadata);
+
+        if ($force) {
+            $media->setDescription('description');
+            $media->setName($localization['title']);
+        }
+
+        $media->setHeight(270);
+        $media->setWidth(480);
+        $media->setContentType('video/x-flv');
+    }
+
+    protected function buildUrl(MediaInterface $media): string {
+        return \sprintf(
+            '%svideos?part=%s&id=%s&key=%s',
+            self::GOOGLE_API_URL,
+            \implode(',', self::FETCH_PARTS),
+            $media->getProviderReference($media),
+            $this->apiKey
+        );
+    }
+
+    protected function adaptMetadata($metadata) {
+        $metadata = $metadata['items'][0];
+        $metadata = \array_merge($metadata, $metadata['snippet']);
+
+        unset(
+            $metadata['kind'],
+            $metadata['snippet'],
+            $metadata['localized'],
+            $metadata['tags'],
+            $metadata['liveBroadcastContent'],
+            $metadata['defaultAudioLanguage']
+        );
+
+        $biggestThumbnail = $this->lookupTheBiggestThumbnail($metadata);
+
+        foreach ($biggestThumbnail as  $key => $value) {
+            $metadata['thumbnail_' . $key] = $value;
+        }
+
+        return $metadata;
+    }
+
+    protected function lookupTheBiggestThumbnail($metadata) {
+        \usort($metadata['thumbnails'], function ($a, $b) {
+            return $b['width'] - $a['width'];
+        });
+
+        return $metadata['thumbnails'][0];
+    }
+
 }

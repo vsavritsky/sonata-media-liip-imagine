@@ -9,6 +9,7 @@ use Symfony\Component\Config\Definition\Processor;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\DependencyInjection\Exception\InvalidArgumentException;
 use Symfony\Component\DependencyInjection\Reference;
 use Sonata\MediaBundle\DependencyInjection\Configuration;
 
@@ -114,7 +115,12 @@ class LiipIntegrationOptimizeCompiler implements CompilerPassInterface
              */
             $definition = $providers['sonata.media.provider.youtube'];
             if ($definition->getClass() === \Sonata\MediaBundle\Provider\YouTubeProvider::class) {
+                $apiParam = $container->getParameter('google_youtube_api_key');
+                if (!$apiParam) {
+                    throw new InvalidArgumentException('You must define parameter "google_youtube_api_key" in your parameters.yaml');
+                }
                 $definition->setClass(YouTubeProvider::class);
+                $definition->addMethodCall('setApiKey', [$apiParam]);
             }
         }
 
