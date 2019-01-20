@@ -89,7 +89,26 @@ sonata_media:
 ```    
 More details you are able to find on [official documentation](https://sonata-project.org/bundles/media/3-x/doc/reference/advanced_configuration.html). 
 
-### 4 Configure you Liip Imagine and add filters sets
+### 4 VideoProvider and Youtube 3 Api
+If you are using youtube provider from sonata media bundle, you might figure out that quality of thumbnails not always well. It happens because oembed API doesn't receive high res thumbnail, but default size. I've changed oembed to Youtube API 3, and now Youtube provider fetches high res thumbnail and also youtube statistics(views, likes, dislikes);
+Before using you need to generate Google Api Key and enable Youtube Api 3 at https://console.developers.google.com;
+
+* https://console.developers.google.com/projectcreate - create new project
+* press add services and apis and choose YouTube Data API v3 http://prntscr.com/m9sgzs 
+* press enable
+* create credential to use this api
+http://prntscr.com/m9sipt
+* copy generated key and press done
+http://prntscr.com/m9sjdr
+* put generated key into your parameters.yml.dist
+
+```yaml
+# This file is auto-generated during the composer install
+parameters:
+    google_youtube_api_key: AIza--sCE3t-r3Y5h0BbtRDPXVDJWQOM------
+```
+
+### 5 Configure you Liip Imagine and add filters sets
 You need to add filter sets in format CONTEXT_FORMAT. You are able to use any filters or post-processors that Liip Imagine provides. 
 ```yaml
 #config.yml
@@ -133,7 +152,7 @@ liip_imagine:
 ```
 [More details](http://symfony.com/doc/master/bundles/LiipImagineBundle/index.html) about Liip Imagine
 
-### 5 Override Sonata's Media provider.
+### 6 Override Sonata's Media provider.
 In general, this bundle override sonata's providers(ImageProvider and YoutubeProvider). 
 If you wanna override some provider's part, you have to extend own provider 
  with Enemis\SonataMediaLiipImagineBundle\Provider\ImageProvider.
