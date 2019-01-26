@@ -138,9 +138,7 @@ class YouTubeProvider extends SonataYouTubeProvider
         $metadata = $metadata['items'][0];
         $metadata = \array_merge($metadata, $metadata['snippet']);
 
-        unset(
-            $metadata['snippet'],
-        );
+        unset($metadata['snippet']);
 
         $biggestThumbnail = $this->lookupTheBiggestThumbnail($metadata);
 
