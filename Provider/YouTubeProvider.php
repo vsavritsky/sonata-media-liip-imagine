@@ -18,6 +18,8 @@ class YouTubeProvider extends SonataYouTubeProvider
         'localizations',
     ];
 
+    const FETCH_FIELDS = 'items(etag,fileDetails,id,localizations,player(embedHeight,embedWidth),snippet(defaultLanguage,description,publishedAt,thumbnails(high,maxres,standard),title),statistics(dislikeCount,likeCount,viewCount),status,suggestions,topicDetails)';
+
     protected $apiKey;
 
     /**
@@ -123,9 +125,10 @@ class YouTubeProvider extends SonataYouTubeProvider
 
     protected function buildUrl(MediaInterface $media): string {
         return \sprintf(
-            '%svideos?part=%s&id=%s&key=%s',
+            '%svideos?part=%s&fields=%s&id=%s&key=%s',
             self::GOOGLE_API_URL,
             \implode(',', self::FETCH_PARTS),
+            self::FETCH_FIELDS,
             $media->getProviderReference($media),
             $this->apiKey
         );
@@ -136,12 +139,7 @@ class YouTubeProvider extends SonataYouTubeProvider
         $metadata = \array_merge($metadata, $metadata['snippet']);
 
         unset(
-            $metadata['kind'],
             $metadata['snippet'],
-            $metadata['localized'],
-            $metadata['tags'],
-            $metadata['liveBroadcastContent'],
-            $metadata['defaultAudioLanguage']
         );
 
         $biggestThumbnail = $this->lookupTheBiggestThumbnail($metadata);
