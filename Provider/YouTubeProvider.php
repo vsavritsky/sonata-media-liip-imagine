@@ -90,14 +90,8 @@ class YouTubeProvider extends SonataYouTubeProvider
         }
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function updateMetadata(MediaInterface $media, $force = false)
     {
-        /**
-         * @var MediaYoutube $media
-         */
         $url = $this->buildUrl($media);
 
         try {
@@ -117,6 +111,8 @@ class YouTubeProvider extends SonataYouTubeProvider
             $media->setDescription('description');
             $media->setName($localization['title']);
         }
+
+        $this->generateReference($media);
 
         $media->setHeight(270);
         $media->setWidth(480);
