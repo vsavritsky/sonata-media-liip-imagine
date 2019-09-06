@@ -1,5 +1,5 @@
 {
-  "name": "enemis/sonata-media-liip-imagine",
+  "name": "vsavritsky/sonata-media-liip-imagine",
   "type": "symfony-bundle",
   "description": "The easiest way to integrate sonata media with liip imagine",
   "keywords": [ "sonata media", "liip imagine", "image", "manipulation", "pictures", "photos", "transformation", "bundle", "symfony" ],
